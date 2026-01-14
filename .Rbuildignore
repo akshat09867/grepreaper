@@ -1,0 +1,11 @@
+^doc$
+^Meta$
+^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^grepreaper\.Rproj$
+^\.gitignore$
+^README\.md$
+^data-raw$
+^\.github$
+^cran-comments\.md$

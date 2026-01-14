@@ -1,0 +1,26 @@
+Package: grepreaper
+Title: Efficient Data Filtering and Aggregation Using Grep
+Version: 0.0.0.9000
+Authors@R: 
+    c(
+    person("David", "Shilane", role = "aut", email = "david.shilane@columbia.edu"),
+    person("Atharv", "Raskar", role = "aut"),
+    person("Akshat", "Maurya", role = c("aut", "cre"), email = "codingmaster902@gmail.com")
+    )
+Description: Provides an interface to the system-level 'grep' utility for 
+    efficiently reading, filtering, and aggregating data from multiple flat 
+    files. By pre-filtering data at the command line before it enters the 
+    R environment, the package reduces memory overhead and improves 
+    ingestion speed. Includes functions for counting records across large 
+    file systems and supports recursive directory searching.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Suggests: 
+    ggplot2,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Imports:
+  data.table

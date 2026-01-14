@@ -1,0 +1,353 @@
+---
+title: "Introduction to grepreaper"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to grepreaper}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(data.table)
+library(grepreaper)
+library(ggplot2)
+
+vignette_wd <- file.path(tempdir(), "grepreaper_vignette")
+if (!dir.exists(vignette_wd)) dir.create(vignette_wd, recursive = TRUE)
+
+data.table::fwrite(ggplot2::diamonds, file.path(vignette_wd, "diamonds.csv"))
+
+zip_path <- system.file("extdata", "ratings_data.zip", package = "grepreaper")
+
+if (zip_path != "") {
+  utils::unzip(zip_path, exdir = vignette_wd)
+} else {
+  r_dir <- file.path(vignette_wd, "ratings_data")
+  if (!dir.exists(r_dir)) dir.create(r_dir)
+  for(i in 1:10) {
+    fwrite(data.frame(user=paste0("U",i), rating=5), file.path(r_dir, paste0("file_",i,".csv")))
+  }
+}
+
+knitr::opts_knit$set(root.dir = vignette_wd)
+```
+
+## Introduction
+
+Modern file systems often include data sets that are stored in components across multiple files.  This could include daily stock pricing changes, monthly transactions, or quarterly updates.  For the purpose of analysis, these data may be read in, filtered for relevant records, and then combined into a single object (such as a data.frame in R).  However, this reading process is not computationally efficient.  It requires individual reads of all of the files before aggregation.  If filters are applied, this is done after the reading takes place.  Many irrelevant records therefore have to be read in.
+
+Utilizing **grep** at the command line can facilitate pre-filtering of data and aggregation from multiple files.  Linking this version of **grep** to R can help to achieve a number of goals:
+
+1.  Read and aggregate data from multiple files without the need for processing work.  
+
+2.  Use pattern matching to filter data before it is read.  This supports reading and aggregating relevant data from multiple files without loading unnecessary records.
+
+3.  Provide counts of the number of rows of relevant data in a range of files.  This can incorporate pattern matching.
+
+Each of these goals begins with certain assumptions about the data to be read:
+
+* The data are stored in delimited flat files that could reasonably be read into a data.frame object in R with a typical file reading program.
+
+* The data in each file has a similar structure in terms of variables (columns).  It would be reasonable to bind the rows from all of the files into a single, comprehensive data.frame object.
+
+The **grepreaper** package is designed to facilitate this reading process.  It designs user-friendly functions for reading data and counting rows without the need for the user to craft the corresponding grep commands.  This vignette will show examples of the features and capabilities of the **grepreaper** package.
+
+## Reading Data
+
+Most typically, we use a file reading method to load data.  As an example, the **fread()** function from the **data.table** package can read a delimited file.  We will work with the **diamonds** data from the **ggplot2** library.  Here this file is stored in a .csv file:
+
+```{r }
+diamonds <- fread(input = "diamonds.csv")
+diamonds[1:5,]
+```
+
+With these data, we could subsequently filter the records to only show diamonds listed as "Ideal" in the **cut** variable:
+
+```{r }
+ideal <- diamonds[cut == "Ideal",]
+ideal[1:5,]
+```
+
+Utilizing **grep** at the command line provides another option to read the data.  This can be performed within data.table's fread() function:
+
+```{r }
+diamonds <- fread(cmd = "grep '' 'diamonds.csv'")
+diamonds[1:5,]
+```
+
+With grep, it is also possible to pre-filter the data based upon pattern matching:
+
+```{r }
+ideal <- fread(cmd = "grep 'Ideal' 'diamonds.csv'")
+ideal[1:5,]
+```
+
+Notice that this approach removes the headers.  However, the method is otherwise sound.  With grep, we can pre-filter the data.
+
+While some users may be eager to learn command line programming tools, the goal of our work is to simplify this approach.  The **grepreaper** library designs simple functions for reading and pre-filtering data.
+
+```{r }
+diamonds <- grep_read(files = "diamonds.csv")
+diamonds[1:5,]
+```
+
+## Showing the Underlying grep Command
+
+The grep_read() function can also demonstrate the underlying grep command:
+
+```{r }
+grep_read(files = "diamonds.csv", show_cmd = TRUE)
+```
+
+This is useful for educational purposes and to better understand how the data are being read.
+
+## Reading and Pre-Filtering Data
+
+A filter can be established by adding the pattern:
+
+```{r }
+ideal <- grep_read(files = "diamonds.csv", pattern = "Ideal")
+ideal[1:5,]
+```
+
+This would correspond to the following grep command:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = "Ideal", show_cmd = TRUE)
+```
+
+You can also search for multiple patterns (using OR logic):
+
+```{r }
+multiple_cuts <- grep_read(files = "diamonds.csv", pattern = c("Ideal", "Very Good"))
+multiple_cuts[1:5,]
+```
+
+We could also display the construction of this grep command:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = c("Ideal", "Very Good"), show_cmd = TRUE)
+```
+
+## Special Options
+
+File reading with grep also allows for some variations on filtering.  The grep_read() function has a number of options built in:
+
+* **invert**:  Search for records that do NOT contain the requested pattern:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = c("SI2"), invert = TRUE)[1:5,]
+```
+
+This adds the -v option to the grep command:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = c("SI2"), invert = TRUE, show_cmd = TRUE)
+```
+
+* **ignore_case**:  Identify any records that contain the pattern without regard to case sensitivity:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = c("ideal"), ignore_case = TRUE)[1:5,]
+```
+
+This adds the -i option to the grep command:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = c("ideal"), ignore_case = TRUE, show_cmd = TRUE)
+```
+
+* **fixed**:  The pattern will be supplied in a fixed manner, exactly as written.
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = "IdEaL", ignore_case = TRUE ,fixed = TRUE)[1:5,]
+```
+
+This adds the -F option to the grep command:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = "IdEaL", ignore_case = TRUE ,fixed = TRUE, show_cmd = T)
+```
+
+* **recursive**:  This will search recursively for all files within a folder and its subfolders.  Note that it would be necessary to specify a path and potentially a file_pattern.
+
+```{r }
+grep_read(path = ".", recursive = TRUE, pattern = "Ideal", file_pattern = ".csv")[1:5,]
+```
+
+This adds the -r option to the grep command. Note that recursive searching will include a larger number of files, which can greatly lengthen the command. 
+
+```{r }
+cmd <- grep_read(path = ".", recursive = TRUE, pattern = "Ideal", file_pattern = ".csv", show_cmd = TRUE)
+substring(text = cmd, first = 1, last = 100)
+```
+
+* **word_match**:  This restricts the matches to entire words rather than portions of words.
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = "VS1", word_match = TRUE)
+```
+
+Notice that using word_match limits the search results to only diamonds with a clarity of 'VS1'.  Diamonds that are 'VVS1' would otherwise match the pattern without an exact word match.
+
+This adds the -w option to the grep command.
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = "VS1", word_match = TRUE, show_cmd = TRUE)
+```
+
+* **include_filename**:  We can identify the original source file for each row:
+
+```{r}
+grep_read(files = "diamonds.csv", include_filename = TRUE)[1:5]
+```
+
+This is especially helpful when reading through multiple files, which will be discussed in more detail later in this document.
+
+This adds -H to the grep command:
+
+```{r}
+grep_read(files = "diamonds.csv", include_filename = TRUE, show_cmd = TRUE)
+```
+
+* **show_line_numbers**:  This provides the rows indices of the original files:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = "Ideal", show_line_numbers = TRUE)[1:5]
+```
+
+Note that the displayed indices have an assumption that headers are not part of the count.  This is an adjustment from the outputs of grep, which would ordinarily include the headers.  (This effectively removes 1 from grep's counts.)
+
+Showing the line number adds -n to the grep command:
+
+```{r }
+grep_read(files = "diamonds.csv", pattern = "Ideal", show_line_numbers = TRUE, show_cmd = T)
+```
+
+For processing purposes behind the scenes, we maintain the -H for filenames when extracting the line numbers.  These filenames are removed if not specifically requested.
+
+
+## Aggregating Data from Multiple Files
+
+Some data systems include records that are spread out over many similar files.  For our purposes, we will assume that all of the relevant files have the same structure (number of columns, column names, and order of columns).  
+
+As an example data set, we have provided 1000 files of simulated ratings.  Each row shows how a **user**, **item** and a **rating** on a 1-5 Likert scale.  The files are organized so that each user's ratings are contained in a unique file.
+
+Most file reading programs in R only read a single file at a time.  As a result, we would have to iterate through the reading process.  Then all of the data would require aggregation, using functions like rbind() to create a single object.
+
+We can improve upon this process with another application of grep at the command line.  This is set up to read and aggregate data from many files, all in a single line of code.  The **grep_read()** function implements this with a simple call:
+
+```{r }
+two_files <- c("ratings_data/file_1.csv", "ratings_data/file_2.csv")
+grep_read(files = two_files)
+```
+
+We can also show the underlying grep command:
+
+```{r }
+grep_read(files = two_files, show_cmd = TRUE)
+```
+
+We could likewise read in the data for 10 files:
+
+```{r }
+ten_files <- sprintf("ratings_data/file_%d.csv", 1:10)
+grep_read(files = ten_files)
+```
+
+Because each filename is appended, the grep command becomes quite lengthy:
+
+```{r }
+grep_read(files = ten_files, show_cmd = TRUE)
+```
+
+Now we can scale up to reading data from all 1000 files. First, we can use the list.files() function from base R to obtain all of the file names:
+
+```{r }
+all_files <- list.files(path = "ratings_data", pattern = ".csv", full.names = TRUE)
+length(all_files)
+all_files[1:10]
+```
+
+Then we can proceed with reading and aggregating all of the ratings data:
+
+```{r}
+ratings <- grep_read(files = all_files)
+ratings
+```
+
+From there, we can utilize pattern matching to extract only the relevant records.  For instance, this data system stores ratings by users.  What if we wanted to pull only the ratings for a specific item?
+
+```{r }
+ratings_0kG80toKp2msfAut <- grep_read(files = all_files, pattern = "0kG80toKp2msfAut")
+ratings_0kG80toKp2msfAut
+```
+
+File reading can also be performed recursively.  This means we would not have to specify all of the filenames in a long list  Instead, we can specify a file path, a file pattern (such as searching all .csv files), and recursive search:
+
+```{r }
+ratings_1fg4sLgEFzAtOqCa <- grep_read(path = "ratings_data", file_pattern = ".csv", pattern = "1fg4sLgEFzAtOqCa")
+ratings_1fg4sLgEFzAtOqCa
+```
+
+With these tools, we now have a simple method that can read, pre-filter, and aggregate data from multiple files.
+
+
+## Counting Records
+
+File reading begins with an uncertainty about the overall dimensions of the data to be read.  We can read a few sample rows to understand the column structure, specifying the nrows parameter:
+
+```{r }
+grep_read(files = "diamonds.csv", nrows = 3)
+```
+
+However, we do not necessarily know the overall number of rows in advance.  This is another place in which utilizing grep at the command line can be of benefit.  It can count the rows in a file without reading the full data.  The grepreaper package utilizes a grep_count() function to perform this task:
+
+```{r }
+grep_count(files = "diamonds.csv")
+```
+
+Counting can be performed with multiple files from the ratings data:
+
+```{r }
+grep_count(files = ten_files)
+```
+
+We can also choose to include the filenames:
+
+```{r }
+grep_count(files = ten_files, include_filename = TRUE)
+```
+
+Pattern matching can also be applied:
+
+```{r }
+grep_count(files = "diamonds.csv", pattern = "VVS1")
+```
+
+Likewise, the full range of options for the pattern-matching can also be applied, such as an inverted search:
+
+```{r }
+grep_count(files = "diamonds.csv", pattern = "VVS1", invert = TRUE)
+```
+
+Word matching can be useful to find all cases of a 5-star rating:
+
+```{r }
+grep_count(files = all_files, pattern = "5", word_match = TRUE)
+```
+
+With word matching, we will avoid extracting rows that include the pattern "5" as part of the identifier for an item or user but do not include a 5-star rating.
+
+## Discussion
+
+The grepreaper package introduces a number of tools that greatly simplify the process of reading data.  Some of its benefits include:
+
+* **Simple Programming**:  A single function can replace iterated calls to file reading tools.  No knowledge of the syntax of grep at the command line is required.
+
+* **Pre-Counting**:  The grep_count() function allows us to understand the size of the data prior to reading it in.
+
+* **Aggregation**:  The grep_read() function automatically binds the data from all sources without additional programming.
+
+* **Pre-Filtering**:  With pattern matching in grep_read(), users can read in only the relevant records of data.  This is more efficient than filtering after reading all of the data.  In fact, we can use pre-filtering to search and aggregate data from vast file systems.
