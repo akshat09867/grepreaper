@@ -8,5 +8,4 @@ The goal of `grepreaper` is to provide a fast, R-friendly interface to the syste
 You can install the development version of grepreaper from [GitHub](https://github.com/akshat09867/grepreaper) with:
 
 ```r
-# install.packages("devtools")
 devtools::install_github("akshat09867/grepreaper")
