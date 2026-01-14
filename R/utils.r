@@ -115,53 +115,150 @@ split_columns <- function(x, column.names = NA, split = ":",
 }
 
 
+# #' Build grep command string
+# #' 
+# #' Constructs a safe and properly formatted grep command string for system execution.
+# #' This function handles input sanitization by utilizing R's internal shell quoting
+# #' mechanism, ensuring compatibility across different operating systems.
+# #' 
+# #' @param pattern Character vector of patterns to search for.
+# #' @param files Character vector of file paths to search in.
+# #' @param options Character string containing grep flags (e.g., "-i", "-v").
+# #' @param fixed Logical; if TRUE, grep is told to treat patterns as fixed strings.
+# #' 
+# #' @return A properly formatted command string ready for system execution.
+# #' @export
+# build_grep_cmd <- function(pattern, files, options = "", fixed = FALSE) {
+  
+#   grep_bin <- Sys.which("grep")
+#   if (grep_bin == "") {
+#     if (.Platform$OS.type == "windows") {
+#       stop("grep not found. Please install Rtools or ensure grep is in your PATH.")
+#     } else {
+#       stop("grep command not found on this system.")
+#     }
+#   }
+
+#   if (!is.character(pattern)) {
+#     stop("'pattern' must be a character variable.")
+#   }
+#   if (!is.character(files) || length(files) == 0) {
+#     stop("'files' must be a non-empty character vector.")
+#   }
+  
+#   files <- normalizePath(files, winslash = "/", mustWork = FALSE)
+  
+#   if (length(pattern) > 1) {
+#     pattern_str <- paste(sprintf("-e %s", shQuote(pattern)), collapse = " ")
+#   } else {
+#     p_val <- if (is.na(pattern) || pattern == "") "" else pattern
+#     pattern_str <- shQuote(p_val)
+#   }
+  
+
+#   files_quoted <- paste(shQuote(files), collapse = " ")
+  
+#   if (nzchar(options)) {
+#     cmd <- sprintf("%s %s %s %s", 
+#                    shQuote(grep_bin), 
+#                    options, 
+#                    pattern_str, 
+#                    files_quoted)
+#   } else {
+#     cmd <- sprintf("%s %s %s", 
+#                    shQuote(grep_bin), 
+#                    pattern_str, 
+#                    files_quoted)
+#   }
+  
+#   return(cmd)
+# }
 #' Build grep command string
 #' 
 #' Constructs a safe and properly formatted grep command string for system execution.
-#' This function handles input sanitization by utilizing R's internal shell quoting
-#' mechanism, ensuring compatibility across different operating systems.
+#' This function handles input sanitization to prevent command injection and ensures
+#' proper quoting of patterns and file paths. It's designed to work with the
+#' \code{safe_system_call} function for secure command execution.
 #' 
-#' @param pattern Character vector of patterns to search for.
-#' @param files Character vector of file paths to search in.
-#' @param options Character string containing grep flags (e.g., "-i", "-v").
-#' @param fixed Logical; if TRUE, grep is told to treat patterns as fixed strings.
+#' @param pattern Pattern to search for (will be automatically quoted)
+#' @param files Files to search in (can be a single file or vector of files)
+#' @param options Options string for grep (e.g., "-i" for case-insensitive)
+#' @param fixed Logical; if TRUE, pattern is treated as a literal string (not escaped)
 #' 
-#' @return A properly formatted command string ready for system execution.
+#' @return A properly formatted command string ready for system execution
+#' 
+#' @examples
+#' # Basic grep command
+#' cmd <- build_grep_cmd("error", "log.txt")
+#' cat("Command:", cmd, "\n")
+#' 
+#' # With grep options
+#' cmd_verbose <- build_grep_cmd("warning", "*.log", options = "-i -n")
+#' cat("Verbose command:", cmd_verbose, "\n")
+#' 
+#' # Multiple files
+#' cmd_multi <- build_grep_cmd("ERROR", c("file1.txt", "file2.txt"))
+#' cat("Multi-file command:", cmd_multi, "\n")
+#' 
 #' @export
 build_grep_cmd <- function(pattern, files, options = "", fixed = FALSE) {
+  if(.Platform$OS.type == "windows") {
+    warning("build_grep_cmd is not needed on Windows - using R-based filtering instead")
+    return("")
+  }
+  
   if (!is.character(pattern)) {
     stop("'pattern' must be a character variable.")
   }
   if (!is.character(files) || length(files) == 0) {
     stop("'files' must be a non-empty character vector")
   }
+  if (!is.character(options)) {
+    stop("'options' must be a character string")
+  }
   
-  files <- normalizePath(files, winslash = "/", mustWork = FALSE)
+
+  if (!fixed) {
+    pattern <- gsub("[\"`$\\\\]", "\\\\&", pattern)  
+  }
+
+  if (fixed) {
+
+    pattern <- gsub("[\"`$\\\\]", "\\\\&", pattern)  
+  }
   
-  if (length(pattern) > 1) {
-    pattern_str <- paste(sprintf("-e %s", shQuote(pattern)), collapse = " ")
-  } else {
-    if (is.na(pattern) || pattern == "") {
-      pattern_str <- shQuote("")
+  
+  files <- sapply(files, function(file) {
+    if (file.exists(file)) {
+      normalizePath(file, winslash = "/", mustWork = FALSE)
     } else {
-      pattern_str <- shQuote(pattern)
+      file
+    }
+  })
+  
+  orig.pattern.length <- length(pattern)
+  
+  if(orig.pattern.length > 1){
+    pattern <- paste(sprintf("-e '%s'", pattern), collapse = " ")
+  }
+  if(orig.pattern.length == 1){
+    orig.pattern <- pattern
+    if(orig.pattern == ""){
+      pattern <- "''"
+    }
+    if(orig.pattern != ""){
+      pattern <- sprintf("'%s'", pattern)
     }
   }
   
-  if (nchar(options) > 0) {
-    cmd <- sprintf("grep %s %s %s", 
-                   options, 
-                   pattern_str, 
-                   paste(shQuote(files), collapse = " "))
-  } else {
-    cmd <- sprintf("grep %s %s", 
-                   pattern_str, 
-                   paste(shQuote(files), collapse = " "))
+  if(nchar(options) > 0) {
+    cmd <- sprintf("grep %s %s %s", options, pattern, paste(base::shQuote(files), collapse = " "))
+  } 
+  if(nchar(options) <= 0){
+    cmd <- sprintf("grep %s %s", pattern, paste(base::shQuote(files), collapse = " "))
   }
   
   return(cmd)
 }
-
-
 
 
