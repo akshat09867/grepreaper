@@ -118,94 +118,45 @@ split_columns <- function(x, column.names = NA, split = ":",
 #' Build grep command string
 #' 
 #' Constructs a safe and properly formatted grep command string for system execution.
-#' This function handles input sanitization to prevent command injection and ensures
-#' proper quoting of patterns and file paths. It's designed to work with the
-#' \code{safe_system_call} function for secure command execution.
+#' This function handles input sanitization by utilizing R's internal shell quoting
+#' mechanism, ensuring compatibility across different operating systems.
 #' 
-#' @param pattern Pattern to search for (will be automatically quoted)
-#' @param files Files to search in (can be a single file or vector of files)
-#' @param options Options string for grep (e.g., "-i" for case-insensitive)
-#' @param fixed Logical; if TRUE, pattern is treated as a literal string (not escaped)
+#' @param pattern Character vector of patterns to search for.
+#' @param files Character vector of file paths to search in.
+#' @param options Character string containing grep flags (e.g., "-i", "-v").
+#' @param fixed Logical; if TRUE, grep is told to treat patterns as fixed strings.
 #' 
-#' @return A properly formatted command string ready for system execution
-#' 
-#' @examples
-#' # Basic grep command
-#' cmd <- build_grep_cmd("error", "log.txt")
-#' cat("Command:", cmd, "\n")
-#' 
-#' # With grep options
-#' cmd_verbose <- build_grep_cmd("warning", "*.log", options = "-i -n")
-#' cat("Verbose command:", cmd_verbose, "\n")
-#' 
-#' # Multiple files
-#' cmd_multi <- build_grep_cmd("ERROR", c("file1.txt", "file2.txt"))
-#' cat("Multi-file command:", cmd_multi, "\n")
-#' 
+#' @return A properly formatted command string ready for system execution.
 #' @export
 build_grep_cmd <- function(pattern, files, options = "", fixed = FALSE) {
-  # Windows compatibility check
-  if(.Platform$OS.type == "windows") {
-    warning("build_grep_cmd is not needed on Windows - using R-based filtering instead")
-    return("")
-  }
-  
-  # Input validation
   if (!is.character(pattern)) {
     stop("'pattern' must be a character variable.")
   }
   if (!is.character(files) || length(files) == 0) {
     stop("'files' must be a non-empty character vector")
   }
-  if (!is.character(options)) {
-    stop("'options' must be a character string")
-  }
   
-  # Sanitize inputs to prevent command injection
-  # Only escape if not using fixed string matching
-  if (!fixed) {
-    pattern <- gsub("[\"`$\\\\]", "\\\\&", pattern)  # Escape dangerous characters
-  }
+  files <- normalizePath(files, winslash = "/", mustWork = FALSE)
   
-  # CRITICAL FIX: For fixed string matching, ensure pattern is properly quoted
-  # This prevents issues with special characters in the pattern
-  if (fixed) {
-    # For fixed strings, we don't escape regex metacharacters
-    # But we still need to handle quotes properly for shell safety
-    pattern <- gsub("[\"`$\\\\]", "\\\\&", pattern)  # Escape shell-dangerous characters only
-  }
-  
-  
-  # Handle file paths more carefully to avoid hidden file issues
-  files <- sapply(files, function(file) {
-    # Use absolute paths but avoid resolving symlinks
-    if (file.exists(file)) {
-      normalizePath(file, winslash = "/", mustWork = FALSE)
+  if (length(pattern) > 1) {
+    pattern_str <- paste(sprintf("-e %s", shQuote(pattern)), collapse = " ")
+  } else {
+    if (is.na(pattern) || pattern == "") {
+      pattern_str <- shQuote("")
     } else {
-      file
-    }
-  })
-  
-  orig.pattern.length <- length(pattern)
-  
-  if(orig.pattern.length > 1){
-    pattern <- paste(sprintf("-e '%s'", pattern), collapse = " ")
-  }
-  if(orig.pattern.length == 1){
-    orig.pattern <- pattern
-    if(orig.pattern == ""){
-      pattern <- "''"
-    }
-    if(orig.pattern != ""){
-      pattern <- sprintf("'%s'", pattern)
+      pattern_str <- shQuote(pattern)
     }
   }
   
-  if(nchar(options) > 0) {
-    cmd <- sprintf("grep %s %s %s", options, pattern, paste(base::shQuote(files), collapse = " "))
-  } 
-  if(nchar(options) <= 0){
-    cmd <- sprintf("grep %s %s", pattern, paste(base::shQuote(files), collapse = " "))
+  if (nchar(options) > 0) {
+    cmd <- sprintf("grep %s %s %s", 
+                   options, 
+                   pattern_str, 
+                   paste(shQuote(files), collapse = " "))
+  } else {
+    cmd <- sprintf("grep %s %s", 
+                   pattern_str, 
+                   paste(shQuote(files), collapse = " "))
   }
   
   return(cmd)
