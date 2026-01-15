@@ -4,23 +4,16 @@ library(data.table)
 library(grepreaper)
 library(ggplot2)
 
-# 1. Create a temporary workspace
 vignette_wd <- file.path(tempdir(), "grepreaper_vignette")
 if (!dir.exists(vignette_wd)) dir.create(vignette_wd, recursive = TRUE)
 
-# 2. Use ggplot2 to create the diamonds CSV
-# This ensures we don't have to ship a 3MB CSV file in the package
 data.table::fwrite(ggplot2::diamonds, file.path(vignette_wd, "diamonds.csv"))
 
-# 3. Handle the compressed ratings data
-# We look for the zip file we placed in inst/extdata
 zip_path <- system.file("extdata", "ratings_data.zip", package = "grepreaper")
 
 if (zip_path != "") {
-  # Unzip the 1000 files into our temporary workspace
   utils::unzip(zip_path, exdir = vignette_wd)
 } else {
-  # Fallback: Create a few dummy files if the zip isn't found (for local testing)
   r_dir <- file.path(vignette_wd, "ratings_data")
   if (!dir.exists(r_dir)) dir.create(r_dir)
   for(i in 1:10) {
@@ -28,7 +21,6 @@ if (zip_path != "") {
   }
 }
 
-# 4. Set the working directory for all subsequent R chunks
 knitr::opts_knit$set(root.dir = vignette_wd)
 
 ## -----------------------------------------------------------------------------

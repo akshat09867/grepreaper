@@ -7,34 +7,19 @@
 build_grep_cmd(pattern, files, options = "", fixed = FALSE)
 }
 \arguments{
-\item{pattern}{Pattern to search for (will be automatically quoted)}
+\item{pattern}{Character vector of patterns to search for.}
 
-\item{files}{Files to search in (can be a single file or vector of files)}
+\item{files}{Character vector of file paths to search in.}
 
-\item{options}{Options string for grep (e.g., "-i" for case-insensitive)}
+\item{options}{Character string containing grep flags (e.g., "-i", "-v").}
 
-\item{fixed}{Logical; if TRUE, pattern is treated as a literal string (not escaped)}
+\item{fixed}{Logical; if TRUE, grep is told to treat patterns as fixed strings.}
 }
 \value{
-A properly formatted command string ready for system execution
+A properly formatted command string ready for system execution.
 }
 \description{
 Constructs a safe and properly formatted grep command string for system execution.
-This function handles input sanitization to prevent command injection and ensures
-proper quoting of patterns and file paths. It's designed to work with the
-\code{safe_system_call} function for secure command execution.
-}
-\examples{
-# Basic grep command
-cmd <- build_grep_cmd("error", "log.txt")
-cat("Command:", cmd, "\n")
-
-# With grep options
-cmd_verbose <- build_grep_cmd("warning", "*.log", options = "-i -n")
-cat("Verbose command:", cmd_verbose, "\n")
-
-# Multiple files
-cmd_multi <- build_grep_cmd("ERROR", c("file1.txt", "file2.txt"))
-cat("Multi-file command:", cmd_multi, "\n")
-
+This function handles input sanitization by utilizing R's internal shell quoting
+mechanism, ensuring compatibility across different operating systems.
 }

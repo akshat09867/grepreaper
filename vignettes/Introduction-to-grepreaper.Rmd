@@ -53,6 +53,16 @@ Each of these goals begins with certain assumptions about the data to be read:
 
 The **grepreaper** package is designed to facilitate this reading process.  It designs user-friendly functions for reading data and counting rows without the need for the user to craft the corresponding grep commands.  This vignette will show examples of the features and capabilities of the **grepreaper** package.
 
+## Platform Compatibility
+
+`grepreaper` is designed to be cross-platform. On Unix-like systems (Linux and macOS), 
+it uses the system's native `grep` utility. On Windows, the package requires 
+**Rtools** to be installed, which provides the necessary `grep.exe` executable. 
+
+The package automatically detects the location of the `grep` binary and handles 
+shell-specific quoting requirements (e.g., double quotes for Windows CMD and 
+single quotes for Unix shells) to ensure consistent behavior across environments.
+
 ## Reading Data
 
 Most typically, we use a file reading method to load data.  As an example, the **fread()** function from the **data.table** package can read a delimited file.  We will work with the **diamonds** data from the **ggplot2** library.  Here this file is stored in a .csv file:
