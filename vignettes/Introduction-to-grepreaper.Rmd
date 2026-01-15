@@ -67,6 +67,12 @@ The package automatically detects the location of the `grep` binary and handles
 shell-specific quoting requirements (e.g., double quotes for Windows CMD and 
 single quotes for Unix shells) to ensure consistent behavior across environments.
 
+```{r, echo = FALSE, results = 'asis'}
+if (!has_grep) {
+  cat("> **Note:** The system utility `grep` was not found. The following examples are shown for demonstration but were not executed during this build.")
+}
+```
+
 ## Reading Data
 
 Most typically, we use a file reading method to load data.  As an example, the **fread()** function from the **data.table** package can read a delimited file.  We will work with the **diamonds** data from the **ggplot2** library.  Here this file is stored in a .csv file:
