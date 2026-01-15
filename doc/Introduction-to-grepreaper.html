@@ -466,7 +466,7 @@ and pre-filtering data.</p>
 <p>The grep_read() function can also demonstrate the underlying grep
 command:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; &#39;&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; &#39;&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <p>This is useful for educational purposes and to better understand how
 the data are being read.</p>
 </div>
@@ -484,7 +484,7 @@ the data are being read.</p>
 ## 5:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78</code></pre>
 <p>This would correspond to the following grep command:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; &#39;Ideal&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; &#39;Ideal&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <p>You can also search for multiple patterns (using OR logic):</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>multiple_cuts <span class="ot">&lt;-</span> <span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;Ideal&quot;</span>, <span class="st">&quot;Very Good&quot;</span>))</span>
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>multiple_cuts[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
@@ -497,7 +497,7 @@ the data are being read.</p>
 ## 5:  0.23 Very Good      H     VS1  59.4    61   338  4.00  4.05  2.39</code></pre>
 <p>We could also display the construction of this grep command:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;Ideal&quot;</span>, <span class="st">&quot;Very Good&quot;</span>), <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -e &#39;Ideal&#39; -e &#39;Very Good&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -e &#39;Ideal&#39; -e &#39;Very Good&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 </div>
 <div id="special-options" class="section level2">
 <h2>Special Options</h2>
@@ -517,7 +517,7 @@ requested pattern:</li>
 ## 5:  0.24 Very Good      I    VVS1  62.3    57   336  3.95  3.98  2.47</code></pre>
 <p>This adds the -v option to the grep command:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;SI2&quot;</span>), <span class="at">invert =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -v &#39;SI2&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -v &#39;SI2&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>ignore_case</strong>: Identify any records that contain the
 pattern without regard to case sensitivity:</li>
@@ -532,7 +532,7 @@ pattern without regard to case sensitivity:</li>
 ## 5:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78</code></pre>
 <p>This adds the -i option to the grep command:</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;ideal&quot;</span>), <span class="at">ignore_case =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -i &#39;ideal&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -i &#39;ideal&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>fixed</strong>: The pattern will be supplied in a fixed
 manner, exactly as written.</li>
@@ -547,7 +547,7 @@ manner, exactly as written.</li>
 ## 5:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78</code></pre>
 <p>This adds the -F option to the grep command:</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;IdEaL&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span> ,<span class="at">fixed =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> T)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -i -F &#39;IdEaL&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -i -F &#39;IdEaL&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>recursive</strong>: This will search recursively for all
 files within a folder and its subfolders. Note that it would be
@@ -566,7 +566,7 @@ searching will include a larger number of files, which can greatly
 lengthen the command.</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">grep_read</span>(<span class="at">path =</span> <span class="st">&quot;.&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">file_pattern =</span> <span class="st">&quot;.csv&quot;</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">substring</span>(<span class="at">text =</span> cmd, <span class="at">first =</span> <span class="dv">1</span>, <span class="at">last =</span> <span class="dv">100</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -r -H &#39;Ideal&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39; &#39;/tmp/Rtmp2xdC8E/gr&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -r -H &#39;Ideal&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39; &#39;/tmp/RtmpscMTNK/gr&quot;</code></pre>
 <ul>
 <li><strong>word_match</strong>: This restricts the matches to entire
 words rather than portions of words.</li>
@@ -590,7 +590,7 @@ diamonds with a clarity of ‘VS1’. Diamonds that are ‘VVS1’ would
 otherwise match the pattern without an exact word match.</p>
 <p>This adds the -w option to the grep command.</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;VS1&quot;</span>, <span class="at">word_match =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -w &#39;VS1&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -w &#39;VS1&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>include_filename</strong>: We can identify the original
 source file for each row:</li>
@@ -605,16 +605,16 @@ source file for each row:</li>
 ## 5:  0.31    Good      J     SI2  63.3    58   335  4.34  4.35  2.75
 ##                                                file
 ##                                              &lt;char&gt;
-## 1: /tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv
-## 2: /tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv
-## 3: /tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv
-## 4: /tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv
-## 5: /tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv</code></pre>
+## 1: /tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv
+## 2: /tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv
+## 3: /tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv
+## 4: /tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv
+## 5: /tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv</code></pre>
 <p>This is especially helpful when reading through multiple files, which
 will be discussed in more detail later in this document.</p>
 <p>This adds -H to the grep command:</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">include_filename =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>show_line_numbers</strong>: This provides the rows indices
 of the original files:</li>
@@ -622,18 +622,18 @@ of the original files:</li>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">show_line_numbers =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>##    carat    cut  color clarity depth table price     x     y     z line_number
 ##    &lt;num&gt; &lt;char&gt; &lt;char&gt;  &lt;char&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;       &lt;num&gt;
-## 1:  0.23  Ideal      E     SI2  61.5    55   326  3.95  3.98  2.43           1
-## 2:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46          12
-## 3:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71          14
-## 4:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68          17
-## 5:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78          40</code></pre>
+## 1:    NA  Ideal      E     SI2  61.5    55   326  3.95  3.98  2.43          NA
+## 2:    NA  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46          NA
+## 3:    NA  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71          NA
+## 4:    NA  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68          NA
+## 5:    NA  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78          NA</code></pre>
 <p>Note that the displayed indices have an assumption that headers are
 not part of the count. This is an adjustment from the outputs of grep,
 which would ordinarily include the headers. (This effectively removes 1
 from grep’s counts.)</p>
 <p>Showing the line number adds -n to the grep command:</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">show_line_numbers =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> T)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -n -H &#39;Ideal&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -n -H &#39;Ideal&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <p>For processing purposes behind the scenes, we maintain the -H for
 filenames when extracting the line numbers. These filenames are removed
 if not specifically requested.</p>
@@ -674,7 +674,7 @@ function implements this with a simple call:</p>
 ## 215: MAYVCdgd zQBDgVrQmSYGpYrn      4</code></pre>
 <p>We can also show the underlying grep command:</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> two_files, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_1.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_2.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_1.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_2.csv&#39;&quot;</code></pre>
 <p>We could likewise read in the data for 10 files:</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a>ten_files <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;ratings_data/file_%d.csv&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
 <span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> ten_files)</span></code></pre></div>
@@ -694,7 +694,7 @@ function implements this with a simple call:</p>
 <p>Because each filename is appended, the grep command becomes quite
 lengthy:</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> ten_files, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_1.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_2.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_3.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_4.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_5.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_6.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_7.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_8.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_9.csv&#39; &#39;/tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_10.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_1.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_2.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_3.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_4.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_5.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_6.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_7.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_8.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_9.csv&#39; &#39;/tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_10.csv&#39;&quot;</code></pre>
 <p>Now we can scale up to reading data from all 1000 files. First, we
 can use the list.files() function from base R to obtain all of the file
 names:</p>
@@ -898,16 +898,16 @@ data:</p>
 <div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" tabindex="-1"></a><span class="fu">grep_count</span>(<span class="at">files =</span> ten_files, <span class="at">include_filename =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>##                                                             file count
 ##                                                           &lt;char&gt; &lt;num&gt;
-##  1:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_1.csv   110
-##  2:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_2.csv   105
-##  3:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_3.csv   117
-##  4:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_4.csv    94
-##  5:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_5.csv   102
-##  6:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_6.csv   102
-##  7:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_7.csv   109
-##  8:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_8.csv    82
-##  9:  /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_9.csv   109
-## 10: /tmp/Rtmp2xdC8E/grepreaper_vignette/ratings_data/file_10.csv    90</code></pre>
+##  1:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_1.csv   110
+##  2:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_2.csv   105
+##  3:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_3.csv   117
+##  4:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_4.csv    94
+##  5:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_5.csv   102
+##  6:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_6.csv   102
+##  7:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_7.csv   109
+##  8:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_8.csv    82
+##  9:  /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_9.csv   109
+## 10: /tmp/RtmpscMTNK/grepreaper_vignette/ratings_data/file_10.csv    90</code></pre>
 <p>Pattern matching can also be applied:</p>
 <div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" tabindex="-1"></a><span class="fu">grep_count</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;VVS1&quot;</span>)</span></code></pre></div>
 <pre><code>##    count

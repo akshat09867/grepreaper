@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 library(data.table)
 library(grepreaper)
 library(ggplot2)
-
 vignette_wd <- file.path(tempdir(), "grepreaper_vignette")
 if (!dir.exists(vignette_wd)) dir.create(vignette_wd, recursive = TRUE)
 

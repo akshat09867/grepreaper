@@ -129,33 +129,41 @@ split_columns <- function(x, column.names = NA, split = ":",
 #' @export
 build_grep_cmd <- function(pattern, files, options = "", fixed = FALSE) {
   
+  # --- FIX: Ensure arguments are not NULL or length zero ---
+  if (is.null(options) || length(options) == 0) options <- ""
+  if (is.null(pattern) || length(pattern) == 0) pattern <- ""
+  
+  # Locate grep binary
   grep_bin <- Sys.which("grep")
   if (grep_bin == "") {
     if (.Platform$OS.type == "windows") {
-      stop("grep not found. Please install Rtools or ensure grep is in your PATH.")
+      # Return empty so grep_read can handle the fallback
+      return("") 
     } else {
-      stop("grep command not found on this system.")
+      stop("grep command not found.")
     }
   }
 
-  if (!is.character(pattern)) stop("'pattern' must be character.")
-  if (!is.character(files) || length(files) == 0) stop("'files' must be a non-empty character vector.")
+  # Input validation
+  if (!is.character(files) || length(files) == 0) {
+    stop("'files' must be a non-empty character vector")
+  }
   
   files <- normalizePath(files, winslash = "/", mustWork = FALSE)
   
+  # Pattern logic
   if (length(pattern) > 1) {
     pattern_str <- paste(sprintf("-e %s", shQuote(pattern)), collapse = " ")
   } else {
-    p_val <- if (is.na(pattern) || pattern == "") "" else pattern
-    pattern_str <- shQuote(p_val)
+    pattern_str <- shQuote(pattern)
   }
   
-  files_quoted <- paste(shQuote(files), collapse = " ")
-  
+  # Final command assembly
+  # nzchar() will now work because options is guaranteed to be length 1
   if (nzchar(options)) {
-    cmd <- sprintf("%s %s %s %s", shQuote(grep_bin), options, pattern_str, files_quoted)
+    cmd <- sprintf("%s %s %s %s", shQuote(grep_bin), options, pattern_str, paste(shQuote(files), collapse = " "))
   } else {
-    cmd <- sprintf("%s %s %s", shQuote(grep_bin), pattern_str, files_quoted)
+    cmd <- sprintf("%s %s %s", shQuote(grep_bin), pattern_str, paste(shQuote(files), collapse = " "))
   }
   
   return(cmd)

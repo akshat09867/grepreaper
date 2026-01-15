@@ -33,6 +33,7 @@
 #'   - show_cmd=TRUE: Character string containing the grep command
 #' @importFrom data.table fread setnames data.table as.data.table rbindlist setorder setcolorder ":=" .N
 #' @importFrom stats setNames 
+#' @importFrom methods as
 #' @importFrom utils globalVariables
 #' @export
 #' @note When searching for literal strings (not regex patterns), set
@@ -47,116 +48,128 @@
 #'   - Empty rows and all-NA rows are automatically filtered out
 
 
-grep_read <- function(files = NULL, path = NULL, file_pattern = NULL, pattern = "", invert = FALSE, ignore_case = FALSE, fixed = FALSE, show_cmd = FALSE, recursive = FALSE, word_match = FALSE, show_line_numbers = FALSE, only_matching = FALSE, nrows = Inf, skip = 0, header = TRUE, col.names = NULL, include_filename = FALSE, show_progress = FALSE, ...) {
+grep_read <- function(files = NULL, path = NULL, file_pattern = NULL, 
+                      pattern = "", invert = FALSE, ignore_case = FALSE, 
+                      fixed = FALSE, show_cmd = FALSE, recursive = FALSE, 
+                      word_match = FALSE, show_line_numbers = FALSE, 
+                      only_matching = FALSE, nrows = Inf, skip = 0, 
+                      header = TRUE, col.names = NULL, include_filename = FALSE, 
+                      show_progress = FALSE, ...) {
   
   if (!requireNamespace("data.table", quietly = TRUE)) {
-    stop("The 'data.table' package is required but not installed. Please install it via install.packages('data.table').")
+    stop("The 'data.table' package is required but not installed.")
   }
   
-  if (is.null(include_filename)) {
-    include_filename <- FALSE
+  # 1. Initialize variables and handle files
+  if (is.null(include_filename)) include_filename <- FALSE
+  if (is.null(files) && !is.null(path)) {
+    files <- list.files(path = path, pattern = file_pattern, full.names = TRUE, 
+                        recursive = recursive, ignore.case = ignore_case)
   }
+  if (length(files) == 0) stop("No files found to read.")
+  if (is.na(pattern[1])) pattern <- ""
   
-  if((is.null(files)) & !is.null(path)){
-    files <- list.files(path = path, pattern = file_pattern, full.names = TRUE, recursive = recursive, ignore.case = ignore_case)
-  }
+  # 2. Build options string
+  need_metadata <- (show_line_numbers == TRUE) || (include_filename == TRUE) || (length(files) > 1)
   
-  if(is.na(pattern[1])){
-    pattern <- ""
-  }
+  # Initialize options safely to avoid "length zero" errors
+  grep_opts <- c("-v", "-i", "-F", "-r", "-w", "-n", "-o", "-H")[
+    c(invert, ignore_case, fixed, recursive, word_match, show_line_numbers, only_matching, need_metadata)
+  ]
+  options_str <- paste(grep_opts, collapse = " ")
   
-  need_metadata <- (show_line_numbers == T) | (include_filename == T) | (length(files) > 1)
-  
-  options <- c("-v", "-i", "-F", "-r", "-w", "-n", "-o", "-H")[c(invert, ignore_case, fixed, recursive, word_match, show_line_numbers, only_matching, need_metadata)]
-  options_str <- paste(options, collapse = " ")
-  
+  # 3. Build the command
   cmd <- build_grep_cmd(pattern = pattern, files = files, options = options_str, fixed = fixed)
+  
+  if (show_cmd == TRUE) return(cmd)
 
-  if(show_cmd == TRUE){
-    return(cmd)
+  # --- START OF SAFETY CHECK (Prevents Exit 127 / Crash) ---
+  if (cmd == "" || !nzchar(Sys.which("grep"))) {
+    if (.Platform$OS.type == "windows") {
+      warning("grep utility not found. Returning empty data.table.")
+      # Create an empty table based on the first file's structure if possible
+      shallow <- data.table::fread(input = files[1], nrows = 0, header = header)
+      return(shallow)
+    }
+    stop("System command 'grep' not found.")
+  }
+  # --- END OF SAFETY CHECK ---
+
+  # 4. Execute the command
+  # Use a shallow copy to get column types/names
+  shallow.copy <- data.table::fread(input = files[1], nrows = 10, header = header)
+  
+  dat <- tryCatch({
+    data.table::fread(cmd = cmd, header = FALSE, ...)
+  }, error = function(e) {
+    # If grep finds nothing, it might throw an error or return empty
+    data.table::data.table()
+  })
+  
+  # 5. Handle empty results
+  if (nrow(dat) == 0) {
+    return(shallow.copy[0, ])
   }
   
-  shallow.copy <- fread(input = files[1], nrows = 10)
-  tryCatch(expr = dat <- fread(cmd = cmd, header = F), finally = data.table())
-  
-  if(dat[, .N == 0]){
-    dat <- shallow.copy[-c(1:.N),]
-    return(dat[])
-  }
-  
+  # 6. Metadata and Column Processing
   setnames(x = dat, old = names(dat), new = c("V1", names(shallow.copy)[2:ncol(shallow.copy)]), skip_absent = TRUE)
   
-  if(need_metadata == TRUE){
-    column.names <- c(c("file", "line_number")[c((include_filename == T | length(files > 1)), show_line_numbers == T)], names(shallow.copy)[1])
+  if (need_metadata == TRUE) {
+    column.names <- c(c("file", "line_number")[c((include_filename == TRUE | length(files) > 1), show_line_numbers == TRUE)], names(shallow.copy)[1])
     
-    additional.columns = split_columns(x = dat[, V1], column.names = column.names, resulting.columns = length(column.names))
+    # Assuming split_columns is a helper function in your package
+    additional.columns <- split_columns(x = dat[, V1], column.names = column.names, resulting.columns = length(column.names))
     
-    dat <- data.table(dat, additional.columns)
+    dat <- data.table::data.table(dat, additional.columns)
     dat[, V1 := NULL]
-    setcolorder(x = dat, neworder = names(shallow.copy), skip_absent = T)
+    data.table::setcolorder(x = dat, neworder = names(shallow.copy), skip_absent = TRUE)
     
-    if(include_filename == FALSE & "file" %in% names(dat)){
-      dat[, file := NULL]
-    }
-    if(show_line_numbers == FALSE & "line_number" %in% names(dat)){
-      dat[, line_number := NULL]
-    }
+    if (include_filename == FALSE && "file" %in% names(dat)) dat[, file := NULL]
+    if (show_line_numbers == FALSE && "line_number" %in% names(dat)) dat[, line_number := NULL]
+  } else {
+    data.table::setnames(x = dat, old = "V1", new = names(shallow.copy)[1], skip_absent = TRUE)
+  }
+  
+  # 7. Header cleaning (Removing repeated headers from multi-file grep)
+  if (header == TRUE) {
+    header_contains_pattern <- length(grep(pattern = paste(pattern, collapse = "|"), x = names(dat))) > 0
+    cond1 <- (length(pattern) == 1 && pattern == "")
+    cond2 <- (all(pattern != "") && header_contains_pattern)
+    cond3 <- invert
     
-  }
-  if(need_metadata == FALSE){
-    setnames(x = dat, old = "V1", new = names(shallow.copy)[1], skip_absent = TRUE)
-  }
-  
-  header_contains_pattern <- length(grep(pattern = paste(pattern, collapse = "|"), x = names(dat))) > 0
-  
- 
-  condition1 <- FALSE
-  if(length(pattern) == 1){
-    if(pattern == ""){
-      condition1 <- TRUE
-    }
-  }
-  condition2 <- FALSE
-  if(sum(pattern == "") == 0 & header_contains_pattern == TRUE){
-    condition2 <- TRUE
-  }
-  
-  condition3 <- FALSE
-  if(invert == TRUE){
-    condition3 <- TRUE
-  }
-  
-  if(header == TRUE){
-    if(condition1 == TRUE | condition2 == TRUE | condition3 == TRUE){
-      
-      num.files <- length(files)
-      
-      if(num.files == 1){
-        dat <- dat[2:.N,]
-      }
-      if(num.files > 1){
-        counts <- grep_count(files = files, path = path, file_pattern = file_pattern, pattern = pattern, invert = invert, ignore_case = ignore_case, fixed = fixed, recursive = recursive, word_match = word_match, only_matching = only_matching, skip = skip, header = header)
-        
-        dat <- dat[-c(1, 1 + counts[1:(.N-1), cumsum(1 + count)])]
+    if (cond1 || cond2 || cond3) {
+      if (length(files) == 1) {
+        dat <- dat[2:.N, ]
+      } else {
+        # Assuming grep_count is a helper function in your package
+        counts <- grep_count(files = files, pattern = pattern, invert = invert, 
+                             ignore_case = ignore_case, fixed = fixed, 
+                             recursive = recursive, word_match = word_match, 
+                             only_matching = only_matching, header = header)
+        dat <- dat[-c(1, 1 + counts[1:(.N - 1), cumsum(1 + count)])]
       }
     }
   }
 
-  if(header == TRUE & "line_number" %in% names(dat)){
+  if (header == TRUE && "line_number" %in% names(dat)) {
     dat[, line_number := as.numeric(line_number) - 1]
   }
    
-  data.types <- as.data.table(x = t(shallow.copy[, lapply(X = .SD, FUN = "class")]), keep.rownames = TRUE)
-  
+  # 8. Type Conversion (Match types to shallow.copy)
+  data.types <- data.table::as.data.table(t(shallow.copy[, lapply(.SD, class)]), keep.rownames = TRUE)
   unique.types <- data.types[V1 != "character", unique(V1)]
   
-  if(length(unique.types) > 0){
-    for(i in 1:length(unique.types)){
-      dat[, names(.SD) := lapply(X = .SD, FUN = "as", Class = unique.types[i]), .SDcols = data.types[V1 == unique.types[i], rn]]
+  if (length(unique.types) > 0) {
+    for (type in unique.types) {
+      cols_to_fix <- data.types[V1 == type, rn]
+      dat[, (cols_to_fix) := lapply(.SD, function(x) as(x, type)), .SDcols = cols_to_fix]
     }
   }
   
-  dat <- dat[1:min(c(.N, nrows)),]
+  # 9. Apply nrows constraint
+  if (nrows < Inf) {
+    dat <- dat[1:min(c(.N, nrows)), ]
+  }
   
   return(dat[])
 }

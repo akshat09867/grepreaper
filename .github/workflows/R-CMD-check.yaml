@@ -40,6 +40,15 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Set up Rtools on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $rtools_path = "C:\rtools44\usr\bin"
+          if (Test-Path $rtools_path) {
+            echo "$rtools_path" >> $env:GITHUB_PATH
+          }
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
