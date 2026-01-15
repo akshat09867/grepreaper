@@ -87,9 +87,7 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
   if (cmd == "" || !nzchar(Sys.which("grep"))) {
     if (.Platform$OS.type == "windows") {
       warning("grep utility not found. Returning empty data.table.")
-      # Create an empty table based on the first file's structure if possible
-      shallow <- data.table::fread(input = files[1], nrows = 0, header = header)
-      return(shallow)
+      return(data.table::data.table()) 
     }
     stop("System command 'grep' not found.")
   }
