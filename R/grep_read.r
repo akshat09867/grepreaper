@@ -139,11 +139,41 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
             dat <- dat[2:.N, ]
         } else if (length(files) > 1) {
             # Only run if grep_count actually returned something
-            counts <- grep_count(files = files, pattern = pattern, invert = invert)
-            if (nrow(counts) > 0) {
-               # This is line 150 - we now know .N > 1
-               dat <- dat[-c(1, 1 + counts[1:(.N - 1), cumsum(1 + count)])]
-            }
+              counts <- grep_count(files = files, pattern = pattern, invert = invert, 
+                             ignore_case = ignore_case, fixed = fixed, 
+                             recursive = recursive, word_match = word_match, 
+                             only_matching = only_matching, header = header)
+        
+        # 2. Sanitize counts: Remove any rows where count is NA (failed reads)
+        if ("count" %in% names(counts)) {
+          counts <- counts[!is.na(count)]
+        }
+        
+        # 3. Calculate rows to remove only if we still have valid counts
+        if (nrow(counts) > 0) {
+           # Determine where the headers are for the 2nd, 3rd, etc. files.
+           # We use 1:(.N-1) because we don't need the offset for the *end* of the last file.
+           # We treat 'count' as numerical to prevent integer overflow or type errors.
+           
+           cumulative_ends <- counts[1:(.N - 1), cumsum(1 + as.numeric(count))]
+           
+           # Check if we actually got values back (handles case where .N=1 after filtering)
+           if (length(cumulative_ends) > 0) {
+             # Remove the first row (Header 1) and the subsequent headers
+             rows_to_remove <- c(1, 1 + cumulative_ends)
+             
+             # Final Safety: Ensure we don't try to remove indices larger than the data
+             rows_to_remove <- rows_to_remove[rows_to_remove <= nrow(dat)]
+             
+             # Remove strictly valid, non-NA indices
+             rows_to_remove <- rows_to_remove[!is.na(rows_to_remove)]
+             
+             dat <- dat[-rows_to_remove]
+           } else {
+             # If only one file was valid or counts is essentially empty
+             dat <- dat[-1]
+           }
+        }
         }
     }
   }
