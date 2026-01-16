@@ -83,13 +83,16 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
   
   if (show_cmd == TRUE) return(cmd)
 
-  # --- START OF SAFETY CHECK (Prevents Exit 127 / Crash) ---
+  # --- START OF SAFETY CHECK ---
   if (cmd == "" || !nzchar(Sys.which("grep"))) {
     if (.Platform$OS.type == "windows") {
       warning("grep utility not found. Returning empty data.table.")
+      
+      # We must return IMMEDIATELY so the code below doesn't run
       return(data.table::data.table()) 
+    } else {
+      stop("System command 'grep' not found.")
     }
-    stop("System command 'grep' not found.")
   }
   # --- END OF SAFETY CHECK ---
 
