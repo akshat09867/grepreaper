@@ -132,26 +132,21 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
   }
   
   # 7. Header cleaning (Removing repeated headers from multi-file grep)
-  if (header == TRUE) {
-    header_contains_pattern <- length(grep(pattern = paste(pattern, collapse = "|"), x = names(dat))) > 0
-    cond1 <- (length(pattern) == 1 && pattern == "")
-    cond2 <- (all(pattern != "") && header_contains_pattern)
-    cond3 <- invert
-    
-    if (cond1 || cond2 || cond3) {
-      if (length(files) == 1) {
-        dat <- dat[2:.N, ]
-      } else {
-        # Assuming grep_count is a helper function in your package
-        counts <- grep_count(files = files, pattern = pattern, invert = invert, 
-                             ignore_case = ignore_case, fixed = fixed, 
-                             recursive = recursive, word_match = word_match, 
-                             only_matching = only_matching, header = header)
-        dat <- dat[-c(1, 1 + counts[1:(.N - 1), cumsum(1 + count)])]
-      }
+ if (header == TRUE) {
+    # ONLY run this if we have more than 1 row to begin with
+    if (nrow(dat) > 1) { 
+        if (length(files) == 1) {
+            dat <- dat[2:.N, ]
+        } else if (length(files) > 1) {
+            # Only run if grep_count actually returned something
+            counts <- grep_count(files = files, pattern = pattern, invert = invert)
+            if (nrow(counts) > 0) {
+               # This is line 150 - we now know .N > 1
+               dat <- dat[-c(1, 1 + counts[1:(.N - 1), cumsum(1 + count)])]
+            }
+        }
     }
   }
-
   if (header == TRUE && "line_number" %in% names(dat)) {
     dat[, line_number := as.numeric(line_number) - 1]
   }
