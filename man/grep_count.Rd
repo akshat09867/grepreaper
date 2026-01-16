@@ -2,7 +2,7 @@
 % Please edit documentation in R/grep_count.r
 \name{grep_count}
 \alias{grep_count}
-\title{grep_count: Efficiently count the number of relevant records from one or more files using grep, with or without pattern searching.}
+\title{grep_count: Efficiently count the number of relevant records from one or more files using grep}
 \usage{
 grep_count(
   files = NULL,
@@ -61,16 +61,8 @@ executing it.}
 \item{...}{Additional arguments passed to fread.}
 }
 \value{
-A data.table with different structures based on the options:
-\itemize{
-\item Default: Data columns with original types preserved
-\item show_line_numbers=TRUE: Additional 'line_number' column (integer) with source file line numbers
-\item include_filename=TRUE: Additional 'source_file' column (character)
-\item only_matching=TRUE: Single 'match' column with matched substrings
-\item count_only=TRUE: 'source_file' and 'count' columns
-\item show_cmd=TRUE: Character string containing the grep command
-}
+A data.table containing file names and counts.
 }
 \description{
-grep_count: Efficiently count the number of relevant records from one or more files using grep, with or without pattern searching.
+grep_count: Efficiently count the number of relevant records from one or more files using grep
 }
