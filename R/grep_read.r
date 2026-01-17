@@ -60,7 +60,6 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
     stop("The 'data.table' package is required but not installed.")
   }
   
-  # 1. Initialize variables and handle files
   if (is.null(include_filename)) include_filename <- FALSE
   if (is.null(files) && !is.null(path)) {
     files <- list.files(path = path, pattern = file_pattern, full.names = TRUE, 
@@ -69,56 +68,44 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
   if (length(files) == 0) stop("No files found to read.")
   if (is.na(pattern[1])) pattern <- ""
   
-  # 2. Build options string
   need_metadata <- (show_line_numbers == TRUE) || (include_filename == TRUE) || (length(files) > 1)
   
-  # Initialize options safely to avoid "length zero" errors
   grep_opts <- c("-v", "-i", "-F", "-r", "-w", "-n", "-o", "-H")[
     c(invert, ignore_case, fixed, recursive, word_match, show_line_numbers, only_matching, need_metadata)
   ]
   options_str <- paste(grep_opts, collapse = " ")
   
-  # 3. Build the command
   cmd <- build_grep_cmd(pattern = pattern, files = files, options = options_str, fixed = fixed)
   
   if (show_cmd == TRUE) return(cmd)
 
-  # --- START OF SAFETY CHECK ---
   if (cmd == "" || !nzchar(Sys.which("grep"))) {
     if (.Platform$OS.type == "windows") {
-      warning("grep utility not found. Returning empty data.table.")
-      
-      # We must return IMMEDIATELY so the code below doesn't run
+      warning("grep utility not found. Returning empty data.table.")      
       return(data.table::data.table()) 
     } else {
       stop("System command 'grep' not found.")
     }
   }
-  # --- END OF SAFETY CHECK ---
 
-  # 4. Execute the command
-  # Use a shallow copy to get column types/names
+
   shallow.copy <- data.table::fread(input = files[1], nrows = 10, header = header)
   
   dat <- tryCatch({
     data.table::fread(cmd = cmd, header = FALSE, ...)
   }, error = function(e) {
-    # If grep finds nothing, it might throw an error or return empty
     data.table::data.table()
   })
   
-  # 5. Handle empty results
   if (nrow(dat) == 0) {
     return(shallow.copy[0, ])
   }
   
-  # 6. Metadata and Column Processing
   setnames(x = dat, old = names(dat), new = c("V1", names(shallow.copy)[2:ncol(shallow.copy)]), skip_absent = TRUE)
   
   if (need_metadata == TRUE) {
     column.names <- c(c("file", "line_number")[c((include_filename == TRUE | length(files) > 1), show_line_numbers == TRUE)], names(shallow.copy)[1])
     
-    # Assuming split_columns is a helper function in your package
     additional.columns <- split_columns(x = dat[, V1], column.names = column.names, resulting.columns = length(column.names))
     
     dat <- data.table::data.table(dat, additional.columns)
@@ -131,46 +118,34 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
     data.table::setnames(x = dat, old = "V1", new = names(shallow.copy)[1], skip_absent = TRUE)
   }
   
-  # 7. Header cleaning (Removing repeated headers from multi-file grep)
  if (header == TRUE) {
-    # ONLY run this if we have more than 1 row to begin with
     if (nrow(dat) > 1) { 
         if (length(files) == 1) {
             dat <- dat[2:.N, ]
         } else if (length(files) > 1) {
-            # Only run if grep_count actually returned something
               counts <- grep_count(files = files, pattern = pattern, invert = invert, 
                              ignore_case = ignore_case, fixed = fixed, 
                              recursive = recursive, word_match = word_match, 
                              only_matching = only_matching, header = header)
         
-        # 2. Sanitize counts: Remove any rows where count is NA (failed reads)
         if ("count" %in% names(counts)) {
           counts <- counts[!is.na(count)]
         }
         
-        # 3. Calculate rows to remove only if we still have valid counts
         if (nrow(counts) > 0) {
-           # Determine where the headers are for the 2nd, 3rd, etc. files.
-           # We use 1:(.N-1) because we don't need the offset for the *end* of the last file.
-           # We treat 'count' as numerical to prevent integer overflow or type errors.
+
            
            cumulative_ends <- counts[1:(.N - 1), cumsum(1 + as.numeric(count))]
            
-           # Check if we actually got values back (handles case where .N=1 after filtering)
            if (length(cumulative_ends) > 0) {
-             # Remove the first row (Header 1) and the subsequent headers
              rows_to_remove <- c(1, 1 + cumulative_ends)
              
-             # Final Safety: Ensure we don't try to remove indices larger than the data
              rows_to_remove <- rows_to_remove[rows_to_remove <= nrow(dat)]
              
-             # Remove strictly valid, non-NA indices
              rows_to_remove <- rows_to_remove[!is.na(rows_to_remove)]
              
              dat <- dat[-rows_to_remove]
            } else {
-             # If only one file was valid or counts is essentially empty
              dat <- dat[-1]
            }
         }
@@ -181,7 +156,6 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
     dat[, line_number := as.numeric(line_number) - 1]
   }
    
-  # 8. Type Conversion (Match types to shallow.copy)
   data.types <- data.table::as.data.table(t(shallow.copy[, lapply(.SD, class)]), keep.rownames = TRUE)
   unique.types <- data.types[V1 != "character", unique(V1)]
   
@@ -192,7 +166,6 @@ grep_read <- function(files = NULL, path = NULL, file_pattern = NULL,
     }
   }
   
-  # 9. Apply nrows constraint
   if (nrows < Inf) {
     dat <- dat[1:min(c(.N, nrows)), ]
   }

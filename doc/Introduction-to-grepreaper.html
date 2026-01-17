@@ -466,7 +466,7 @@ and pre-filtering data.</p>
 <p>The grep_read() function can also demonstrate the underlying grep
 command:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; &#39;&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; &#39;&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <p>This is useful for educational purposes and to better understand how
 the data are being read.</p>
 </div>
@@ -477,27 +477,27 @@ the data are being read.</p>
 <span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>ideal[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
 <pre><code>##    carat    cut  color clarity depth table price     x     y     z
 ##    &lt;num&gt; &lt;char&gt; &lt;char&gt;  &lt;char&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;
-## 1:  0.23  Ideal      E     SI2  61.5    55   326  3.95  3.98  2.43
-## 2:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
-## 3:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71
-## 4:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68
-## 5:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78</code></pre>
+## 1:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
+## 2:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71
+## 3:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68
+## 4:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78
+## 5:  0.33  Ideal      I     SI2  61.2    56   403  4.49  4.50  2.75</code></pre>
 <p>This would correspond to the following grep command:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; &#39;Ideal&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; &#39;Ideal&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <p>You can also search for multiple patterns (using OR logic):</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>multiple_cuts <span class="ot">&lt;-</span> <span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;Ideal&quot;</span>, <span class="st">&quot;Very Good&quot;</span>))</span>
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>multiple_cuts[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
 <pre><code>##    carat       cut  color clarity depth table price     x     y     z
 ##    &lt;num&gt;    &lt;char&gt; &lt;char&gt;  &lt;char&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;
-## 1:  0.23     Ideal      E     SI2  61.5    55   326  3.95  3.98  2.43
-## 2:  0.24 Very Good      J    VVS2  62.8    57   336  3.94  3.96  2.48
-## 3:  0.24 Very Good      I    VVS1  62.3    57   336  3.95  3.98  2.47
-## 4:  0.26 Very Good      H     SI1  61.9    55   337  4.07  4.11  2.53
-## 5:  0.23 Very Good      H     VS1  59.4    61   338  4.00  4.05  2.39</code></pre>
+## 1:  0.24 Very Good      J    VVS2  62.8    57   336  3.94  3.96  2.48
+## 2:  0.24 Very Good      I    VVS1  62.3    57   336  3.95  3.98  2.47
+## 3:  0.26 Very Good      H     SI1  61.9    55   337  4.07  4.11  2.53
+## 4:  0.23 Very Good      H     VS1  59.4    61   338  4.00  4.05  2.39
+## 5:  0.23     Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46</code></pre>
 <p>We could also display the construction of this grep command:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;Ideal&quot;</span>, <span class="st">&quot;Very Good&quot;</span>), <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -e &#39;Ideal&#39; -e &#39;Very Good&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -e &#39;Ideal&#39; -e &#39;Very Good&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 </div>
 <div id="special-options" class="section level2">
 <h2>Special Options</h2>
@@ -517,7 +517,7 @@ requested pattern:</li>
 ## 5:  0.24 Very Good      I    VVS1  62.3    57   336  3.95  3.98  2.47</code></pre>
 <p>This adds the -v option to the grep command:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;SI2&quot;</span>), <span class="at">invert =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -v &#39;SI2&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -v &#39;SI2&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>ignore_case</strong>: Identify any records that contain the
 pattern without regard to case sensitivity:</li>
@@ -525,14 +525,14 @@ pattern without regard to case sensitivity:</li>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;ideal&quot;</span>), <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
 <pre><code>##    carat    cut  color clarity depth table price     x     y     z
 ##    &lt;num&gt; &lt;char&gt; &lt;char&gt;  &lt;char&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;
-## 1:  0.23  Ideal      E     SI2  61.5    55   326  3.95  3.98  2.43
-## 2:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
-## 3:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71
-## 4:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68
-## 5:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78</code></pre>
+## 1:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
+## 2:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71
+## 3:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68
+## 4:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78
+## 5:  0.33  Ideal      I     SI2  61.2    56   403  4.49  4.50  2.75</code></pre>
 <p>This adds the -i option to the grep command:</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="fu">c</span>(<span class="st">&quot;ideal&quot;</span>), <span class="at">ignore_case =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -i &#39;ideal&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -i &#39;ideal&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>fixed</strong>: The pattern will be supplied in a fixed
 manner, exactly as written.</li>
@@ -540,14 +540,14 @@ manner, exactly as written.</li>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;IdEaL&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span> ,<span class="at">fixed =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
 <pre><code>##    carat    cut  color clarity depth table price     x     y     z
 ##    &lt;num&gt; &lt;char&gt; &lt;char&gt;  &lt;char&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;
-## 1:  0.23  Ideal      E     SI2  61.5    55   326  3.95  3.98  2.43
-## 2:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
-## 3:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71
-## 4:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68
-## 5:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78</code></pre>
+## 1:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
+## 2:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71
+## 3:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68
+## 4:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78
+## 5:  0.33  Ideal      I     SI2  61.2    56   403  4.49  4.50  2.75</code></pre>
 <p>This adds the -F option to the grep command:</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;IdEaL&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span> ,<span class="at">fixed =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> T)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -i -F &#39;IdEaL&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -i -F &#39;IdEaL&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>recursive</strong>: This will search recursively for all
 files within a folder and its subfolders. Note that it would be
@@ -556,17 +556,17 @@ necessary to specify a path and potentially a file_pattern.</li>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">path =</span> <span class="st">&quot;.&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">file_pattern =</span> <span class="st">&quot;.csv&quot;</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
 <pre><code>##    carat    cut  color clarity depth table price     x     y     z
 ##    &lt;num&gt; &lt;char&gt; &lt;char&gt;  &lt;char&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;
-## 1:  0.23  Ideal      E     SI2  61.5    55   326  3.95  3.98  2.43
-## 2:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
-## 3:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71
-## 4:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68
-## 5:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78</code></pre>
+## 1:  0.23  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
+## 2:  0.31  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71
+## 3:  0.30  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68
+## 4:  0.33  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78
+## 5:  0.33  Ideal      I     SI2  61.2    56   403  4.49  4.50  2.75</code></pre>
 <p>This adds the -r option to the grep command. Note that recursive
 searching will include a larger number of files, which can greatly
 lengthen the command.</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">grep_read</span>(<span class="at">path =</span> <span class="st">&quot;.&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">file_pattern =</span> <span class="st">&quot;.csv&quot;</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">substring</span>(<span class="at">text =</span> cmd, <span class="at">first =</span> <span class="dv">1</span>, <span class="at">last =</span> <span class="dv">100</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -r -H &#39;Ideal&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39; &#39;/tmp/RtmpBDbY6w/gr&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -r -H &#39;Ideal&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39; &#39;/tmp/RtmpY7SkxT/gr&quot;</code></pre>
 <ul>
 <li><strong>word_match</strong>: This restricts the matches to entire
 words rather than portions of words.</li>
@@ -574,23 +574,23 @@ words rather than portions of words.</li>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;VS1&quot;</span>, <span class="at">word_match =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>##       carat       cut  color clarity depth table price     x     y     z
 ##       &lt;num&gt;    &lt;char&gt; &lt;char&gt;  &lt;char&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;
-##    1:  0.23      Good      E     VS1  56.9    65   327  4.05  4.07  2.31
-##    2:  0.23 Very Good      H     VS1  59.4    61   338  4.00  4.05  2.39
-##    3:  0.23     Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
-##    4:  0.23 Very Good      H     VS1  61.0    57   353  3.94  3.96  2.41
-##    5:  0.24   Premium      I     VS1  62.5    57   355  3.97  3.94  2.47
+##    1:  0.23 Very Good      H     VS1  59.4    61   338  4.00  4.05  2.39
+##    2:  0.23     Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46
+##    3:  0.23 Very Good      H     VS1  61.0    57   353  3.94  3.96  2.41
+##    4:  0.24   Premium      I     VS1  62.5    57   355  3.97  3.94  2.47
+##    5:  0.23 Very Good      F     VS1  60.9    57   357  3.96  3.99  2.42
 ##   ---                                                                   
-## 8167:  0.57   Premium      E     VS1  61.6    58  2753  5.36  5.33  3.29
-## 8168:  0.84      Good      I     VS1  63.7    59  2753  5.94  5.90  3.77
-## 8169:  0.76   Premium      I     VS1  59.3    62  2753  5.93  5.85  3.49
-## 8170:  0.70 Very Good      D     VS1  63.1    59  2755  5.67  5.58  3.55
-## 8171:  0.71     Ideal      G     VS1  61.4    56  2756  5.76  5.73  3.53</code></pre>
+## 8166:  0.57   Premium      E     VS1  61.6    58  2753  5.36  5.33  3.29
+## 8167:  0.84      Good      I     VS1  63.7    59  2753  5.94  5.90  3.77
+## 8168:  0.76   Premium      I     VS1  59.3    62  2753  5.93  5.85  3.49
+## 8169:  0.70 Very Good      D     VS1  63.1    59  2755  5.67  5.58  3.55
+## 8170:  0.71     Ideal      G     VS1  61.4    56  2756  5.76  5.73  3.53</code></pre>
 <p>Notice that using word_match limits the search results to only
 diamonds with a clarity of ‘VS1’. Diamonds that are ‘VVS1’ would
 otherwise match the pattern without an exact word match.</p>
 <p>This adds the -w option to the grep command.</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;VS1&quot;</span>, <span class="at">word_match =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -w &#39;VS1&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -w &#39;VS1&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>include_filename</strong>: We can identify the original
 source file for each row:</li>
@@ -605,16 +605,16 @@ source file for each row:</li>
 ## 5:  0.31    Good      J     SI2  63.3    58   335  4.34  4.35  2.75
 ##                                                file
 ##                                              &lt;char&gt;
-## 1: /tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv
-## 2: /tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv
-## 3: /tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv
-## 4: /tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv
-## 5: /tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv</code></pre>
+## 1: /tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv
+## 2: /tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv
+## 3: /tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv
+## 4: /tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv
+## 5: /tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv</code></pre>
 <p>This is especially helpful when reading through multiple files, which
 will be discussed in more detail later in this document.</p>
 <p>This adds -H to the grep command:</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">include_filename =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <ul>
 <li><strong>show_line_numbers</strong>: This provides the rows indices
 of the original files:</li>
@@ -622,18 +622,18 @@ of the original files:</li>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">show_line_numbers =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>##    carat    cut  color clarity depth table price     x     y     z line_number
 ##    &lt;num&gt; &lt;char&gt; &lt;char&gt;  &lt;char&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;       &lt;num&gt;
-## 1:    NA  Ideal      E     SI2  61.5    55   326  3.95  3.98  2.43          NA
-## 2:    NA  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46          NA
-## 3:    NA  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71          NA
-## 4:    NA  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68          NA
-## 5:    NA  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78          NA</code></pre>
+## 1:    NA  Ideal      J     VS1  62.8    56   340  3.93  3.90  2.46          NA
+## 2:    NA  Ideal      J     SI2  62.2    54   344  4.35  4.37  2.71          NA
+## 3:    NA  Ideal      I     SI2  62.0    54   348  4.31  4.34  2.68          NA
+## 4:    NA  Ideal      I     SI2  61.8    55   403  4.49  4.51  2.78          NA
+## 5:    NA  Ideal      I     SI2  61.2    56   403  4.49  4.50  2.75          NA</code></pre>
 <p>Note that the displayed indices have an assumption that headers are
 not part of the count. This is an adjustment from the outputs of grep,
 which would ordinarily include the headers. (This effectively removes 1
 from grep’s counts.)</p>
 <p>Showing the line number adds -n to the grep command:</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;Ideal&quot;</span>, <span class="at">show_line_numbers =</span> <span class="cn">TRUE</span>, <span class="at">show_cmd =</span> T)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -n -H &#39;Ideal&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -n -H &#39;Ideal&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/diamonds.csv&#39;&quot;</code></pre>
 <p>For processing purposes behind the scenes, we maintain the -H for
 filenames when extracting the line numbers. These filenames are removed
 if not specifically requested.</p>
@@ -674,7 +674,7 @@ function implements this with a simple call:</p>
 ## 215: MAYVCdgd zQBDgVrQmSYGpYrn      4</code></pre>
 <p>We can also show the underlying grep command:</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> two_files, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_1.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_2.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_1.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_2.csv&#39;&quot;</code></pre>
 <p>We could likewise read in the data for 10 files:</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a>ten_files <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;ratings_data/file_%d.csv&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
 <span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> ten_files)</span></code></pre></div>
@@ -694,7 +694,7 @@ function implements this with a simple call:</p>
 <p>Because each filename is appended, the grep command becomes quite
 lengthy:</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">grep_read</span>(<span class="at">files =</span> ten_files, <span class="at">show_cmd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_1.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_2.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_3.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_4.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_5.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_6.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_7.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_8.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_9.csv&#39; &#39;/tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_10.csv&#39;&quot;</code></pre>
+<pre><code>## [1] &quot;&#39;/usr/bin/grep&#39; -H &#39;&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_1.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_2.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_3.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_4.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_5.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_6.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_7.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_8.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_9.csv&#39; &#39;/tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_10.csv&#39;&quot;</code></pre>
 <p>Now we can scale up to reading data from all 1000 files. First, we
 can use the list.files() function from base R to obtain all of the file
 names:</p>
@@ -730,132 +730,20 @@ users. What if we wanted to pull only the ratings for a specific
 item?</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>ratings_0kG80toKp2msfAut <span class="ot">&lt;-</span> <span class="fu">grep_read</span>(<span class="at">files =</span> all_files, <span class="at">pattern =</span> <span class="st">&quot;0kG80toKp2msfAut&quot;</span>)</span>
 <span id="cb63-2"><a href="#cb63-2" tabindex="-1"></a>ratings_0kG80toKp2msfAut</span></code></pre></div>
-<pre><code>##         user             item rating
-##       &lt;char&gt;           &lt;char&gt;  &lt;int&gt;
-##  1: a7gzXxfI 0kG80toKp2msfAut      5
-##  2: ubDjTvkL 0kG80toKp2msfAut      4
-##  3: f6jyi1qQ 0kG80toKp2msfAut      3
-##  4: 1bfhCeqd 0kG80toKp2msfAut      5
-##  5: lWRx7GS2 0kG80toKp2msfAut      3
-##  6: DacQCxYF 0kG80toKp2msfAut      3
-##  7: q0BbKPHJ 0kG80toKp2msfAut      3
-##  8: mtUWll4C 0kG80toKp2msfAut      5
-##  9: H6hvxoOW 0kG80toKp2msfAut      3
-## 10: 46QYwhP8 0kG80toKp2msfAut      2
-## 11: h24ByYiR 0kG80toKp2msfAut      3
-## 12: pFhDzh0S 0kG80toKp2msfAut      2
-## 13: r3YTt57i 0kG80toKp2msfAut      5
-## 14: pjzqBFA5 0kG80toKp2msfAut      2
-## 15: SwSOmItk 0kG80toKp2msfAut      5
-## 16: 6GTMPHOM 0kG80toKp2msfAut      5
-## 17: ibeTAm2i 0kG80toKp2msfAut      1
-## 18: XV43a0gJ 0kG80toKp2msfAut      5
-## 19: 2PI4m8Ph 0kG80toKp2msfAut      2
-## 20: INFoOzcl 0kG80toKp2msfAut      2
-## 21: WsJ3NTIz 0kG80toKp2msfAut      2
-## 22: UxZFRUDw 0kG80toKp2msfAut      3
-## 23: d0UWBOdu 0kG80toKp2msfAut      4
-## 24: WuwhZcby 0kG80toKp2msfAut      4
-## 25: wnqaJvdi 0kG80toKp2msfAut      5
-## 26: tlDiX2S0 0kG80toKp2msfAut      1
-## 27: 5aq67PrC 0kG80toKp2msfAut      3
-## 28: jM1eZyHf 0kG80toKp2msfAut      5
-## 29: w876zsaH 0kG80toKp2msfAut      1
-## 30: YiauYpGv 0kG80toKp2msfAut      4
-## 31: VSebteAH 0kG80toKp2msfAut      3
-## 32: 88bH2EuY 0kG80toKp2msfAut      2
-## 33: OiiM2Wwy 0kG80toKp2msfAut      5
-## 34: CbLu7ceh 0kG80toKp2msfAut      2
-## 35: 4aeOMRMe 0kG80toKp2msfAut      3
-## 36: ETQknw07 0kG80toKp2msfAut      2
-## 37: DTnw1mvw 0kG80toKp2msfAut      5
-## 38: zCAYYlUO 0kG80toKp2msfAut      5
-## 39: cUYDrWPG 0kG80toKp2msfAut      4
-## 40: GyEodv7B 0kG80toKp2msfAut      2
-## 41: UXsqMeDv 0kG80toKp2msfAut      5
-## 42: a6hokyIq 0kG80toKp2msfAut      4
-## 43: vVRaiAQI 0kG80toKp2msfAut      2
-## 44: q4QrA1OX 0kG80toKp2msfAut      1
-## 45: yLQAEkVp 0kG80toKp2msfAut      1
-## 46: qzWbvxr4 0kG80toKp2msfAut      5
-## 47: AaQSukjk 0kG80toKp2msfAut      4
-## 48: tkqYuTMN 0kG80toKp2msfAut      4
-## 49: Ijdhor1J 0kG80toKp2msfAut      3
-## 50: Z4uia0d3 0kG80toKp2msfAut      1
-## 51: 7GMh2jz7 0kG80toKp2msfAut      4
-## 52: 3C0GcKkV 0kG80toKp2msfAut      4
-## 53: BHxRtzfl 0kG80toKp2msfAut      4
-## 54: LzOjUaPM 0kG80toKp2msfAut      1
-## 55: fqyjp1t8 0kG80toKp2msfAut      4
-## 56: mDadxdJw 0kG80toKp2msfAut      2
-## 57: RDtsFLfr 0kG80toKp2msfAut      2
-## 58: GjEnU7LM 0kG80toKp2msfAut      3
-## 59: Hw034ISx 0kG80toKp2msfAut      5
-## 60: ZKKc1f4K 0kG80toKp2msfAut      1
-## 61: cBOeESyA 0kG80toKp2msfAut      4
-## 62: mbPQOZV1 0kG80toKp2msfAut      1
-##         user             item rating</code></pre>
+<pre><code>##        user             item rating
+##      &lt;char&gt;           &lt;char&gt;  &lt;int&gt;
+## 1: ubDjTvkL 0kG80toKp2msfAut      4
+## 2: r3YTt57i 0kG80toKp2msfAut      5</code></pre>
 <p>File reading can also be performed recursively. This means we would
 not have to specify all of the filenames in a long list Instead, we can
 specify a file path, a file pattern (such as searching all .csv files),
 and recursive search:</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>ratings_1fg4sLgEFzAtOqCa <span class="ot">&lt;-</span> <span class="fu">grep_read</span>(<span class="at">path =</span> <span class="st">&quot;ratings_data&quot;</span>, <span class="at">file_pattern =</span> <span class="st">&quot;.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;1fg4sLgEFzAtOqCa&quot;</span>)</span>
 <span id="cb65-2"><a href="#cb65-2" tabindex="-1"></a>ratings_1fg4sLgEFzAtOqCa</span></code></pre></div>
-<pre><code>##         user             item rating
-##       &lt;char&gt;           &lt;char&gt;  &lt;int&gt;
-##  1: a7gzXxfI 1fg4sLgEFzAtOqCa      5
-##  2: 5p5qBUBD 1fg4sLgEFzAtOqCa      3
-##  3: pBaqmBhe 1fg4sLgEFzAtOqCa      4
-##  4: HLIFNhw6 1fg4sLgEFzAtOqCa      5
-##  5: TkRp2BwJ 1fg4sLgEFzAtOqCa      3
-##  6: hxNdw0dh 1fg4sLgEFzAtOqCa      1
-##  7: K3JNdGqE 1fg4sLgEFzAtOqCa      5
-##  8: FnLcjBUD 1fg4sLgEFzAtOqCa      3
-##  9: VQM97tZ0 1fg4sLgEFzAtOqCa      1
-## 10: FKdHK4VB 1fg4sLgEFzAtOqCa      4
-## 11: R4zQUkJR 1fg4sLgEFzAtOqCa      3
-## 12: ePqBULvn 1fg4sLgEFzAtOqCa      2
-## 13: N4GTRrFb 1fg4sLgEFzAtOqCa      1
-## 14: CvTH7xOa 1fg4sLgEFzAtOqCa      1
-## 15: e4qeBnXL 1fg4sLgEFzAtOqCa      1
-## 16: BErL8Hxu 1fg4sLgEFzAtOqCa      4
-## 17: Yg2ewVFg 1fg4sLgEFzAtOqCa      5
-## 18: Aam6a118 1fg4sLgEFzAtOqCa      2
-## 19: KGX1xysf 1fg4sLgEFzAtOqCa      5
-## 20: d1YJSjy7 1fg4sLgEFzAtOqCa      5
-## 21: MODzBk9T 1fg4sLgEFzAtOqCa      1
-## 22: LX2Rgpby 1fg4sLgEFzAtOqCa      1
-## 23: t1SQzASt 1fg4sLgEFzAtOqCa      2
-## 24: jatOWMoP 1fg4sLgEFzAtOqCa      1
-## 25: RTOWbarb 1fg4sLgEFzAtOqCa      2
-## 26: GPwP2qHH 1fg4sLgEFzAtOqCa      2
-## 27: OBBWuWnn 1fg4sLgEFzAtOqCa      5
-## 28: DbME6W4i 1fg4sLgEFzAtOqCa      5
-## 29: GOVaxEcq 1fg4sLgEFzAtOqCa      4
-## 30: fr5X4VqD 1fg4sLgEFzAtOqCa      3
-## 31: nCzPuNKO 1fg4sLgEFzAtOqCa      2
-## 32: 5BxWelBT 1fg4sLgEFzAtOqCa      1
-## 33: qBOKWWJK 1fg4sLgEFzAtOqCa      1
-## 34: i13bMyA2 1fg4sLgEFzAtOqCa      2
-## 35: YTM0LcoU 1fg4sLgEFzAtOqCa      5
-## 36: MfpvuE1E 1fg4sLgEFzAtOqCa      1
-## 37: zA8kUWEL 1fg4sLgEFzAtOqCa      3
-## 38: pRfZVAly 1fg4sLgEFzAtOqCa      5
-## 39: KOgveFtc 1fg4sLgEFzAtOqCa      4
-## 40: 37i68wEl 1fg4sLgEFzAtOqCa      4
-## 41: YHLa8K3d 1fg4sLgEFzAtOqCa      4
-## 42: Ow8P0Khj 1fg4sLgEFzAtOqCa      5
-## 43: NzewKI5D 1fg4sLgEFzAtOqCa      2
-## 44: S4sEPme8 1fg4sLgEFzAtOqCa      4
-## 45: pT8GySsT 1fg4sLgEFzAtOqCa      2
-## 46: NJzkLGMB 1fg4sLgEFzAtOqCa      3
-## 47: 20eWOyCk 1fg4sLgEFzAtOqCa      3
-## 48: CLMckhJh 1fg4sLgEFzAtOqCa      1
-## 49: p3FtvitJ 1fg4sLgEFzAtOqCa      2
-## 50: pYi4Ntgz 1fg4sLgEFzAtOqCa      4
-## 51: RSd5Y36Q 1fg4sLgEFzAtOqCa      3
-## 52: P2ytjcZm 1fg4sLgEFzAtOqCa      4
-##         user             item rating</code></pre>
+<pre><code>##        user             item rating
+##      &lt;char&gt;           &lt;char&gt;  &lt;int&gt;
+## 1: 5p5qBUBD 1fg4sLgEFzAtOqCa      3
+## 2: OBBWuWnn 1fg4sLgEFzAtOqCa      5</code></pre>
 <p>With these tools, we now have a simple method that can read,
 pre-filter, and aggregate data from multiple files.</p>
 </div>
@@ -898,42 +786,42 @@ data:</p>
 <div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" tabindex="-1"></a><span class="fu">grep_count</span>(<span class="at">files =</span> ten_files, <span class="at">include_filename =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>##                                                             file count
 ##                                                           &lt;char&gt; &lt;num&gt;
-##  1:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_1.csv   110
-##  2:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_2.csv   105
-##  3:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_3.csv   117
-##  4:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_4.csv    94
-##  5:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_5.csv   102
-##  6:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_6.csv   102
-##  7:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_7.csv   109
-##  8:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_8.csv    82
-##  9:  /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_9.csv   109
-## 10: /tmp/RtmpBDbY6w/grepreaper_vignette/ratings_data/file_10.csv    90</code></pre>
+##  1:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_1.csv   110
+##  2:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_2.csv   105
+##  3:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_3.csv   117
+##  4:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_4.csv    94
+##  5:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_5.csv   102
+##  6:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_6.csv   102
+##  7:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_7.csv   109
+##  8:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_8.csv    82
+##  9:  /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_9.csv   109
+## 10: /tmp/RtmpY7SkxT/grepreaper_vignette/ratings_data/file_10.csv    90</code></pre>
 <p>Pattern matching can also be applied:</p>
 <div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" tabindex="-1"></a><span class="fu">grep_count</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;VVS1&quot;</span>)</span></code></pre></div>
 <pre><code>##    count
 ##    &lt;num&gt;
-## 1:  3654</code></pre>
+## 1:  3655</code></pre>
 <p>Likewise, the full range of options for the pattern-matching can also
 be applied, such as an inverted search:</p>
 <div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" tabindex="-1"></a><span class="fu">grep_count</span>(<span class="at">files =</span> <span class="st">&quot;diamonds.csv&quot;</span>, <span class="at">pattern =</span> <span class="st">&quot;VVS1&quot;</span>, <span class="at">invert =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>##    count
 ##    &lt;num&gt;
-## 1: 50285</code></pre>
+## 1: 50286</code></pre>
 <p>Word matching can be useful to find all cases of a 5-star rating:</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" tabindex="-1"></a><span class="fu">grep_count</span>(<span class="at">files =</span> all_files, <span class="at">pattern =</span> <span class="st">&quot;5&quot;</span>, <span class="at">word_match =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>##       count
 ##       &lt;num&gt;
-##    1:    17
-##    2:    15
-##    3:    19
-##    4:    15
-##    5:    21
+##    1:    18
+##    2:    16
+##    3:    20
+##    4:    16
+##    5:    22
 ##   ---      
-##  996:    18
-##  997:    16
-##  998:    18
-##  999:    23
-## 1000:    20</code></pre>
+##  996:    19
+##  997:    17
+##  998:    19
+##  999:    24
+## 1000:    21</code></pre>
 <p>With word matching, we will avoid extracting rows that include the
 pattern “5” as part of the identifier for an item or user but do not
 include a 5-star rating.</p>

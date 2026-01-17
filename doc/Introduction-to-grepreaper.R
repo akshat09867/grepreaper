@@ -54,6 +54,11 @@ if (zip_path != "") {
 
 knitr::opts_knit$set(root.dir = vignette_wd)
 
+## ----echo = FALSE, results = 'asis'-------------------------------------------
+if (!has_grep) {
+  cat("> **Note:** The system utility `grep` was not found. The following examples are shown for demonstration but were not executed during this build.")
+}
+
 ## ----eval = has_grep----------------------------------------------------------
 diamonds <- fread(input = "diamonds.csv")
 diamonds[1:5,]
